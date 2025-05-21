@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Memory Management Simulator</title>
+    <link href="style.css" rel="stylesheet">
+</head>
+<body>
+    <div class="heading">
+    <h1>Memory Management Simulator</h1>
+    <div class="mode">
+    <div class="toggle"></div>
+    <p class="toggle-text"></p></div>
+    </div>
+    <div class="notification" id="notification"></div>
+    
+    <div class="container">
+        <div class="panel">
+            <h2>Memory Allocation</h2>
+            
+            <div class="form-group">
+                <label for="processName">Process Name</label>
+                <input type="text" id="processName" placeholder="Enter process name" />
+            </div>
+            
+            <div class="form-group">
+                <label for="processSize">Memory Size (KB)</label>
+                <input type="number" id="processSize" placeholder="Enter size in KB" min="1" />
+            </div>
+            
+            <div class="form-group">
+                <label for="strategy">Allocation Strategy</label>
+                <select id="strategy">
+                    <option value="first-fit">First Fit</option>
+                    <option value="best-fit">Best Fit</option>
+                    <option value="worst-fit">Worst Fit</option>
+                </select>
+            </div>
+            
+            <button id="allocateBtn" class="success">Allocate Memory</button>
+            <button id="deallocateBtn" class="danger">Deallocate Process</button>
+            <button id="resetBtn">Reset Memory</button>
+            <button id="compactBtn">Compact Memory</button>
+        </div>
+        
+        <div class="panel">
+            <h2>Memory Status</h2>
+            <div id="totalMemorySize">Total Memory Size: 0 KB</div>
+            <div id="memoryVisualization"></div>
+            <button id="refreshMemoryBtn">Refresh Memory View</button>
+        </div>
+        
+        <div class="panel">
+            <div class="tab-container">
+                <div class="tab-buttons">
+                    <button class="tab-button active" data-tab="fragmentation">Fragmentation</button>
+                    <button class="tab-button" data-tab="processes">Running Processes</button>
+                </div>
+                
+                <div class="tab-content active" id="fragmentation">
+                    <h3>Memory Fragmentation Analysis</h3>
+                    <div class="stats" id="fragmentationStats"></div>
+                </div>
+                
+                <div class="tab-content" id="processes">
+                    <h3>Running Processes</h3>
+                    <div class="process-list" id="processList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="pbl.js"></script>
+</body>
+</html>
