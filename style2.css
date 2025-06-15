@@ -1,0 +1,55 @@
+.background-video{
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+}
+.start-screen {
+    backdrop-filter: blur(8px);
+    background: rgba(255, 255, 255, 0.05);
+    height: 50vh;
+    width: 70vh;
+    border: 6px outset white;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+h1{
+    font-size: 60px;
+    color: deepskyblue;
+    font-family: "Sixtyfour", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    font-variation-settings: "BLED" 0, "SCAN" 0;
+    margin-bottom: 1px;
+}
+p{
+    margin-top: 3px;
+    font-size: 20px;
+    color: gainsboro;
+    font-family: "Audiowide", sans-serif;
+    font-weight: 400;
+    font-style: normal
+}
+a{
+  font-family: "Rubik Iso", system-ui;
+  font-weight: 400;
+  font-style: normal;
+  color: white;
+  font-size: 30px;
+  opacity: 0.8;
+  margin-top: 15px;
+}
+a:hover{
+    font-size: 32px;
+    opacity: 1;
+}
+.center{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}

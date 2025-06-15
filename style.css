@@ -10,12 +10,20 @@
         align-items: center;
         justify-content: space-around;
     }
+    .background-video{
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+}
     h1, h2, h3 {
         color: #ffffff;
         margin-top: 0;
         letter-spacing: 1px;
     }
-
+    .light-mode .heading h1{
+        color: white;
+    }
     .container {
         max-width: 1200px;
         margin: auto;
@@ -73,7 +81,6 @@
         width: 100%;
         box-shadow: inset 0 0 5px rgba(0,0,0,0.4);
     }
-
     label {
         margin-bottom: 6px;
         font-weight: bold;
@@ -312,6 +319,7 @@ body.light-mode {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
+    color:black;
 }
 
 .light-mode .memory-block {
@@ -489,5 +497,5 @@ body.light-mode {
         transform: translateX(30px);
     }
     .light-mode .toggle-text{
-        color: black;
+        color: white;
     }

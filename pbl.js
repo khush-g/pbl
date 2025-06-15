@@ -9,6 +9,8 @@
         const totalMemorySizeDisplay = document.getElementById('totalMemorySize');
         const toggle_text = document.querySelector('.toggle-text');
         toggle_text.textContent = 'Dark Mode';
+
+
     // Wait for DOM to fully load
     document.addEventListener('DOMContentLoaded', function () {
         const toggle = document.querySelector('.toggle');
@@ -95,6 +97,9 @@
                 blockId.className = 'block-id';
                 blockId.textContent = block.id;
                 blockElement.appendChild(blockId);
+                if(blockSize=0){
+                    blockId.style.display = 'none';
+                }
                 
                 const blockSize = document.createElement('div');
                 blockSize.className = 'block-size';

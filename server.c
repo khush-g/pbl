@@ -11,8 +11,8 @@
 #define MAX_PROCESS_NAME 20
 
 typedef struct {
-    int size;               // Total size of the block
-    int requested_size;     // Actual size requested by the process
+    int size;         
+    int requested_size;     
     int used;
     char process[MAX_PROCESS_NAME];
     time_t allocation_time;
@@ -35,7 +35,7 @@ ProcessInfo processes[MAX_PROCESSES] = {0};
 int process_count = 0;
 
 void initialize_memory() {
-   //srand((unsigned int)time(NULL));
+    srand((unsigned int)time(NULL));
     for (int i = 0; i < MAX_BLOCKS; i++) {
         memory[i].size = 100 + (rand() % 201);
         memory[i].requested_size = 0;
@@ -145,7 +145,7 @@ int worst_fit(int size, const char *process) {
 int deallocate_process(const char *process) {
     int found = 0;
 
-    // Deallocate all memory blocks associated with the process
+
     for (int i = 0; i < MAX_BLOCKS; i++) {
         if (memory[i].used && strcmp(memory[i].process, process) == 0) {
             memory[i].used = 0;
@@ -156,16 +156,14 @@ int deallocate_process(const char *process) {
         }
     }
 
-    // If any memory block was freed, remove all matching entries from process list
     if (found) {
         for (int j = 0; j < process_count; ) {
             if (strcmp(processes[j].name, process) == 0) {
-                // Shift the array left to remove the entry
                 for (int k = j; k < process_count - 1; k++) {
                     processes[k] = processes[k + 1];
                 }
                 process_count--;
-                // Do not increment j, because we need to check the new value at j
+       
             } else {
                 j++;
             }
@@ -271,21 +269,41 @@ void show_processes(char* response) {
     strncat(buffer, "]}", BUFFER_SIZE - strlen(buffer) - 1);
     strncpy(response, buffer, BUFFER_SIZE);
 }
+int compact_memory() {
+    int target = 0;
+    int total_free_size = 0;
 
-void compact_memory() {
     for (int i = 0; i < MAX_BLOCKS; i++) {
-        if (!memory[i].used) {
-            for (int j = i + 1; j < MAX_BLOCKS; j++) {
-                if (memory[j].used) {
-                    MemoryBlock temp = memory[i];
-                    memory[i] = memory[j];
-                    memory[j] = temp;
-                    break;
-                }
+        if (memory[i].used) {
+            if (i != target) {
+                memory[target] = memory[i];
             }
+            target++;
+        } else {
+            total_free_size += memory[i].size;
         }
     }
+
+    if (total_free_size > 0 && target < MAX_BLOCKS) {
+        memory[target].size = total_free_size;
+        memory[target].requested_size = 0;
+        memory[target].used = 0;
+        memory[target].process[0] = '\0';
+        memory[target].allocation_time = 0;
+        target++;
+    }
+
+    for (int i = target; i < MAX_BLOCKS; i++) {
+        memory[i].size = 0;
+        memory[i].requested_size = 0;
+        memory[i].used = 0;
+        memory[i].process[0] = '\0';
+        memory[i].allocation_time = 0;
+    }
+
+    return target;  // number of valid blocks (non-zero size)
 }
+
 
 void handle_client(SOCKET client) {
     char buffer[BUFFER_SIZE];
@@ -370,11 +388,35 @@ void handle_client(SOCKET client) {
         char response[BUFFER_SIZE];
         show_processes(response);
         send_response(client, "200 OK", "application/json", response);
-    } 
-    else if (strcmp(path, "/compact") == 0) {
-        compact_memory();
-        send_response(client, "200 OK", "application/json", "{\"status\":\"compacted\"}");
-    } 
+    } else if (strcmp(path, "/compact") == 0) {
+    int valid_blocks = compact_memory();
+
+    // Start JSON response
+    char json[BUFFER_SIZE];
+    strcpy(json, "{ \"status\": \"compacted\", \"memory\": [");
+
+    int first = 1;  // flag to handle commas
+    for (int i = 0; i < valid_blocks; i++) {
+        if (memory[i].size == 0) continue;  // skip zero-size blocks
+
+        char block[256];
+        snprintf(block, sizeof(block),
+            "%s{\"size\":%d,\"requested_size\":%d,\"used\":%d,\"process\":\"%s\"}",
+            first ? "" : ",",  // only add comma if it's not the first block
+            memory[i].size,
+            memory[i].requested_size,
+            memory[i].used,
+            memory[i].process
+        );
+        strcat(json, block);
+        first = 0;  // after first valid block
+    }
+
+    strcat(json, "] }");
+
+    send_response(client, "200 OK", "application/json", json);
+}
+
     else {
         send_response(client, "404 Not Found", "application/json", "{\"error\":\"endpoint_not_found\"}");
     }
